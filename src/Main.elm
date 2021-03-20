@@ -38,7 +38,6 @@ update msg model =
                     (Success value , Cmd.none)
                 
                 Err _ ->
-                    Debug.log(toString <| result)
                     (Failure, Cmd.none)
 
 view : Model -> Html Msg
@@ -62,15 +61,25 @@ viewEmployees model =
         Success value ->
             div[]
                 [
-                    p[][text "We'll figure this out later..."],
-                    p[][text (toString (length value))]
+                   table []
+                    (List.concat [
+                        [ thead []
+                            [ th [][text "ID"]
+                            , th [][text "Name"]
+                            , th [][text "Surname"]
+                            , th [][text "Email"]
+                            , th [][text "Dept code"]
+                            ]
+                        ],
+                        List.map employeeTable value
+                    ])
                 ]
         
 headers : List Http.Header
 headers = [Http.header "Content-Type" "application/json", Http.header "Accept" "application/json"]  
 getEmployees : Cmd Msg
 getEmployees =
-     Http.request -- This line is missing from your code
+     Http.request 
         { method = "GET"
         , headers = headers
         , url = "http://localhost:8080/jpareststarter/api/employee/employees"
@@ -89,3 +98,12 @@ main =
     , view = view
     }
 
+employeeTable : Employee -> Html Msg
+employeeTable employee =
+      tr []
+            [ td [][text (toString employee.id)]
+            , td [][text employee.firstName]
+            , td [][text employee.lastName]
+            , td [][text employee.email]
+            , td [][text (toString employee.departmentcode)]
+            ]

@@ -1,6 +1,7 @@
 module Employee exposing (..)
 
 import Json.Decode exposing (Decoder, field, string, int, list, map5)
+import Html exposing (..)
 
 type alias Employee =
     { id: Int
@@ -42,3 +43,5 @@ emailDecoder =
 departmentcodeDecoder : Decoder Int
 departmentcodeDecoder = 
     field "departmentcode" int
+
+
