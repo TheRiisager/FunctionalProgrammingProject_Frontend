@@ -4,8 +4,12 @@ import Browser
 import Html exposing (..)
 import Http
 import Employee exposing(Employee, employeeListDecoder)
+import Debug exposing (toString)
 
-url = "localhost:8080/jpareststarter/api/"
+
+
+url : String
+url = "localhost:8080/jpareststarter/api/employee/employees"
 
 type Model
     = Failure
@@ -33,6 +37,7 @@ update msg model =
                     (Success, Cmd.none)
                 
                 Err _ ->
+                    Debug.log(toString <| result)
                     (Failure, Cmd.none)
 
 view : Model -> Html Msg
@@ -59,15 +64,21 @@ viewEmployees model =
                     p[][text "We'll figure this out later..."]
                 ]
         
-
-    
+headers : List Http.Header
+headers = [Http.header "Content-Type" "application/json", Http.header "Accept" "application/json"]  
 getEmployees : Cmd Msg
 getEmployees =
-    Http.get
-            { url = url++"employee/employees"
-            , expect = Http.expectJson GotEmployees employeeListDecoder
-            }
-
+     Http.request -- This line is missing from your code
+        { method = "GET"
+        , headers = headers
+        , url = "http://localhost:8080/jpareststarter/api/employee/employees"
+        , body = Http.emptyBody
+        , expect = Http.expectJson GotEmployees employeeListDecoder
+        , timeout = Nothing
+        , tracker = Nothing
+        }  
+   
+main : Program () Model Msg
 main =
   Browser.element
     { init = init
