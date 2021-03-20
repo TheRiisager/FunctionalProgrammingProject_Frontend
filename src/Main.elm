@@ -5,6 +5,7 @@ import Html exposing (..)
 import Http
 import Employee exposing(Employee, employeeListDecoder)
 import Debug exposing (toString)
+import List exposing (length)
 
 
 
@@ -14,7 +15,7 @@ url = "localhost:8080/jpareststarter/api/employee/employees"
 type Model
     = Failure
     | Loading
-    | Success
+    | Success (List Employee)
 
 type Msg
     = GotEmployees (Result Http.Error (List Employee))
@@ -33,8 +34,8 @@ update msg model =
     case msg of
         GotEmployees result ->
             case result of
-                Ok _ ->
-                    (Success, Cmd.none)
+                Ok value ->
+                    (Success value , Cmd.none)
                 
                 Err _ ->
                     Debug.log(toString <| result)
@@ -58,10 +59,11 @@ viewEmployees model =
         Loading ->
             text "Loading..."
         
-        Success ->
+        Success value ->
             div[]
                 [
-                    p[][text "We'll figure this out later..."]
+                    p[][text "We'll figure this out later..."],
+                    p[][text (toString (length value))]
                 ]
         
 headers : List Http.Header
