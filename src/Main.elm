@@ -10,7 +10,7 @@ import List exposing (length)
 
 
 url : String
-url = "localhost:8080/jpareststarter/api/employee/employees"
+url = "http://localhost:4712/employees"
 
 type Model
     = Failure
@@ -61,19 +61,18 @@ viewEmployees model =
         Success value ->
             div[]
                 [
-                   table []
-                    (List.concat [
-                        [ thead []
-                            [ th [][text "ID"]
-                            , th [][text "Name"]
-                            , th [][text "Surname"]
-                            , th [][text "Email"]
-                            , th [][text "Dept code"]
-                            ]
-                        ],
-                        List.map employeeTable value
-                    ])
+                   table [] (List.concat [[tableHead], List.map employeeTable value])
                 ]
+
+tableHead : Html Msg
+tableHead = 
+    thead []
+        [ th [][text "ID"]
+        , th [][text "Name"]
+        , th [][text "Surname"]
+        , th [][text "Email"]
+        , th [][text "Dept code"]
+    ]
         
 headers : List Http.Header
 headers = [Http.header "Content-Type" "application/json", Http.header "Accept" "application/json"]  
@@ -82,7 +81,7 @@ getEmployees =
      Http.request 
         { method = "GET"
         , headers = headers
-        , url = "http://localhost:8080/jpareststarter/api/employee/employees"
+        , url = url
         , body = Http.emptyBody
         , expect = Http.expectJson GotEmployees employeeListDecoder
         , timeout = Nothing
